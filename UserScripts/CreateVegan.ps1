@@ -36,16 +36,17 @@ $passPT = GET-Temppassword –length 8 –sourcedata $ascii
 $pass = ConvertTo-SecureString($passPT) -AsPlainText -Force
 $username = $firstname+"."+$lastname
 $dir = "C:\inetpub\ftproot\LocalUser\$username"
-#"E:\Sites\ftproot\LocalUser\$username"
-#"C:\inetpub\ftproot\LocalUser\$username"
-$computername = "vegan-svr1.infotech.pri"
-$cred = Get-Credential
 
-Invoke-Command -Credential $cred -ComputerName $computername -ScriptBlock {
-    New-LocalUser -FullName "$Firstname $Lastname" -Description $email -Name $username -Password $pass -AccountNeverExpires
-    mkdir $dir
-    New-WebVirtualDirectory -Site VEGAN -PhysicalPath $dir -Name $username
-}
+New-LocalUser -FullName "$Firstname $Lastname" -Description $email -Name $username -Password $pass -AccountNeverExpires
+
+mkdir $dir
+$Acl = Get-Acl $dir
+$Ar = New-Object  system.security.accesscontrol.filesystemaccessrule("$username","FullControl","Allow")
+$Acl.SetAccessRule($Ar)
+Set-Acl $dir $Acl
+
+New-WebVirtualDirectory -Site VEGAN -PhysicalPath $dir -Name $username
+
 
 #send email
 $EmailFrom = "veganwebhosting@gmail.com"
