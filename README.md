@@ -1,2 +1,2 @@
 # Vegan
-scripts for adding users to the vegan web hosting service
+scripts for use with the vegan web hosting service
