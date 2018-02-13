@@ -39,24 +39,26 @@ $dir = "C:\inetpub\ftproot\LocalUser\$username"
 #"E:\Sites\ftproot\LocalUser\$username"
 #"C:\inetpub\ftproot\LocalUser\$username"
 $computername = "vegan-svr1.infotech.pri"
-$cred = get-credentials
+$cred = Get-Credential
 
-New-LocalUser -FullName "$Firstname $Lastname" -Description $email -Name $username -Password $pass -AccountNeverExpires
-mkdir $dir
-New-WebVirtualDirectory -Site VEGAN -PhysicalPath $dir -Name $username
+Invoke-Command -Credential $cred -ComputerName $computername -ScriptBlock {
+    New-LocalUser -FullName "$Firstname $Lastname" -Description $email -Name $username -Password $pass -AccountNeverExpires
+    mkdir $dir
+    New-WebVirtualDirectory -Site VEGAN -PhysicalPath $dir -Name $username
+}
 
 #send email
 $EmailFrom = "veganwebhosting@gmail.com"
 $EmailTo = $email 
 $Subject = "Your new Vegan account is ready!" 
-$Body = "Congratulations on taking your first step to becoming aVegan!
+$Body = "Congratulations on taking your first step to becoming a Vegan!
 Here at Vegan Web Hosting we are dedicated to helping you along your new path.
 Here are your new credentials for getting in to your new web hosting server:
     Username: $username
     Password: $passPT
 
-You can access your new site by going to http://vegan-svr1.infotech.pri/$user/ in your favourite web browser.
-You can transfer files to your site via ftp by following the instuctions on our support page <link here>
+You can access your new site by going to http://vegan.infotech.pri/$user/ in your favourite web browser.
+You can transfer files to your site via ftp by following the instuctions on our support page vegan/faq.html
 Any questions or concerns can be expressed by sending an email to veganwebhosting@gmail.com
 
 Thank you for choosing Vegan Web Hosting!" 
