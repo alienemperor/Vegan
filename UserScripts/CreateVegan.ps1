@@ -65,5 +65,5 @@ Thank you for choosing Vegan Web Hosting!"
 $SMTPServer = "smtp.gmail.com" 
 $SMTPClient = New-Object Net.Mail.SmtpClient($SmtpServer, 587) 
 $SMTPClient.EnableSsl = $true 
-$SMTPClient.Credentials = New-Object System.Net.NetworkCredential("emai", "password"); 
+$SMTPClient.Credentials = New-Object System.Net.NetworkCredential("email", "password"); 
 $SMTPClient.Send($EmailFrom, $EmailTo, $Subject, $Body)
