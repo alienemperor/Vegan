@@ -38,6 +38,8 @@ $username = $firstname+"."+$lastname
 $dir = "C:\inetpub\ftproot\LocalUser\$username"
 #"E:\Sites\ftproot\LocalUser\$username"
 #"C:\inetpub\ftproot\LocalUser\$username"
+$computername = "vegan-svr1.infotech.pri"
+$cred = get-credentials
 
 New-LocalUser -FullName "$Firstname $Lastname" -Description $email -Name $username -Password $pass -AccountNeverExpires
 mkdir $dir
