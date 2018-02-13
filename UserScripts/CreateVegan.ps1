@@ -35,21 +35,25 @@ $email = Read-Host "What is the user's email address?"
 $passPT = GET-Temppassword –length 8 –sourcedata $ascii
 $pass = ConvertTo-SecureString($passPT) -AsPlainText -Force
 $username = $firstname+"."+$lastname
-$dir = "C:\inetpub\ftproot\LocalUser\$username"
+$dir = "E:\Sites\ftproot\LocalUser\$username"
 
+#create local user
 New-LocalUser -FullName "$Firstname $Lastname" -Description $email -Name $username -Password $pass -AccountNeverExpires
 
+#create user ftp directory and change permission on transferred index file
 mkdir $dir
-$Acl = Get-Acl $dir
+copy E:\Sites\defaultPage\index.html $dir
+$Acl = Get-Acl "$dir\index.html"
 $Ar = New-Object  system.security.accesscontrol.filesystemaccessrule("$username","FullControl","Allow")
 $Acl.SetAccessRule($Ar)
-Set-Acl $dir $Acl
+Set-Acl "$dir\index.html" $Acl
 
 New-WebVirtualDirectory -Site VEGAN -PhysicalPath $dir -Name $username
 
 
 #send email
-$EmailFrom = "veganwebhosting@gmail.com"
+$EmailFrom = "email"
+$EmailPass = "pass for email"
 $EmailTo = $email 
 $Subject = "Your new Vegan account is ready!" 
 $Body = "Congratulations on taking your first step to becoming a Vegan!
@@ -66,5 +70,5 @@ Thank you for choosing Vegan Web Hosting!"
 $SMTPServer = "smtp.gmail.com" 
 $SMTPClient = New-Object Net.Mail.SmtpClient($SmtpServer, 587) 
 $SMTPClient.EnableSsl = $true 
-$SMTPClient.Credentials = New-Object System.Net.NetworkCredential("email", "password"); 
+$SMTPClient.Credentials = New-Object System.Net.NetworkCredential($EmailFrom, $EmailPass); 
 $SMTPClient.Send($EmailFrom, $EmailTo, $Subject, $Body)
